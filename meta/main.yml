@@ -16,7 +16,8 @@ galaxy_info:
     - docker
 
 dependencies:
-  - role: geerlingguy.pip
+  #  - role: geerlingguy.pip
+  - role: ansible-role-pip
     vars:
       pip_package: "{{ docker_pip_package }}"
       pip_install_packages: 

@@ -1,0 +1,32 @@
+---
+
+- name: "[Debian] Fail if release is not supported (Ubuntu version >= 16.04)"
+  fail:
+    msg="The role is designed only for Debian 12 or higher"
+  when:
+     - ansible_distribution_version is version('12', '<')
+
+- name: Install docker requisites
+  apt: name=apt-transport-https,ca-certificates,software-properties-common
+
+
+
+- name: "[Debian] Import the Docker repository key"
+  apt_key:
+    url=https://download.docker.com/linux/debian/gpg
+    state=present
+
+- name: "[Debian] Add docker apt repo"
+  apt_repository:
+    repo='deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable'
+    state=present
+  register: add_docker_repo
+
+- name: "[Debian] Force an apt cache refresh"
+  apt: update_cache=yes
+  changed_when: False
+  when: add_docker_repo is changed
+
+- name: "[Debain] Perform common tasks"
+  include: common.yml
+
